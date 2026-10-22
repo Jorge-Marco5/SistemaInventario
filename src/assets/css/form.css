@@ -1,0 +1,227 @@
+/* ==========================================================================
+   FORM COMPONENT & CONTROLS
+   ========================================================================== */
+
+/* Asegurar que los cálculos de caja incluyan bordes y padding */
+form,
+.form-group,
+.form-row,
+.form-grid-2,
+.form-grid-3,
+input,
+select,
+textarea,
+button {
+    box-sizing: border-box;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Grupos de campos */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    width: 100%;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Etiquetas */
+label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    user-select: none;
+}
+
+label.required::after,
+.required-mark {
+    content: "*";
+    color: var(--danger);
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+/* Estilos unificados para inputs, selects y textareas */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+select,
+textarea {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 0.65em 1em;
+    font-size: 0.95rem;
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--text);
+    background-color: var(--background-color-secondary);
+    box-shadow: var(--shadow);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* Estado Focus interactivo y moderno */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: var(--secondary);
+    opacity: 0.7;
+}
+
+/* Estados deshabilitados y de sólo lectura */
+input:disabled,
+select:disabled,
+textarea:disabled,
+input[readonly],
+textarea[readonly] {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background-color: var(--bg-code);
+    border-color: var(--border);
+}
+
+/* Textarea específico */
+textarea {
+    min-height: 90px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Select específico */
+select {
+    cursor: pointer;
+    padding-right: 2.2em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8em center;
+    background-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+/* Checkboxes y Radios */
+.form-check {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--primary, #3b82f6);
+}
+
+.form-check label {
+    cursor: pointer;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Textos de ayuda y errores */
+.form-hint,
+.form-help {
+    font-size: 0.78rem;
+    color: var(--secondary);
+    line-height: 1.3;
+}
+
+.form-error {
+    font-size: 0.78rem;
+    color: var(--danger);
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Validación: estado inválido */
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: var(--danger) !important;
+}
+
+input.is-invalid:focus,
+select.is-invalid:focus,
+textarea.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.25) !important;
+}
+
+/* Layouts de filas y columnas (adaptables) */
+.form-row {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+}
+
+.form-row>* {
+    flex: 1;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+/* Adaptabilidad para móviles */
+@media (max-width: 680px) {
+
+    .row,
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-grid-2,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}

@@ -1,0 +1,85 @@
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-container .dropdown-content {
+    display: none;
+    position: fixed;
+    background-color: var(--background-color-secondary);
+    min-width: 160px;
+    box-shadow: 0px 10px 25px -5px rgba(0, 0, 0, 0.25), 0px 5px 10px -5px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border);
+    z-index: 10000;
+    border-radius: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Estado de apertura: animación emergente sin parpadeos */
+.dropdown-container .dropdown-content.show {
+    display: block;
+    animation: popUpDropdown 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Estado de cierre: desvanecimiento rápido antes de ocultar */
+.dropdown-container .dropdown-content.closing {
+    display: block;
+    animation: popDownDropdown 0.16s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes popUpDropdown {
+    from {
+        background-color: rgba(0, 0, 0, 0);
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+    }
+
+    to {
+        width: auto;
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes popDownDropdown {
+    from {
+        width: auto;
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    to {
+        background-color: rgba(0, 0, 0, 0);
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+    }
+}
+
+.dropdown-container .dropdown-content a {
+    color: var(--text);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-container .dropdown-content a:hover {
+    background-color: var(--bg-shadow);
+    color: var(--primary);
+}
+
+.dropdown-container .alert-dropdown {
+    width: 10px;
+    height: 10px;
+    border-radius: 50px;
+    background-color: var(--danger);
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+}
+
+.dropdown-container .alert-dropdown.active {
+    display: block;
+}

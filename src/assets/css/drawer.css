@@ -1,0 +1,232 @@
+/* Backdrop / Overlay del Drawer */
+.drawer-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    justify-content: flex-end;
+    align-items: stretch;
+    z-index: 1000;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.drawer-container.active {
+    display: flex;
+    animation: fadeInDrawerBackdrop 0.22s ease-out forwards;
+}
+
+.drawer-container.closing {
+    display: flex;
+    animation: fadeOutDrawerBackdrop 0.22s ease-out forwards;
+}
+
+/* Panel lateral (Drawer Content) */
+.drawer-content {
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background: var(--background-color-secondary);
+    color: var(--text);
+    border-left: 1px solid var(--border);
+    box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.25), -5px 0 10px -5px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    border-radius: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+.drawer-container.active .drawer-content {
+    animation: slideInDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.drawer-container.closing .drawer-content {
+    animation: slideOutDrawer 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes fadeInDrawerBackdrop {
+    from {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    to {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+}
+
+@keyframes fadeOutDrawerBackdrop {
+    from {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+
+    to {
+        background-color: rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes slideInDrawer {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        width: 100%;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutDrawer {
+    from {
+        width: 100%;
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Variantes de tamaño para el Drawer */
+.drawer-container.drawer-sm .drawer-content {
+    max-width: 380px;
+}
+
+.drawer-container.drawer-lg .drawer-content {
+    max-width: 680px;
+}
+
+.drawer-container.drawer-xl .drawer-content {
+    max-width: 860px;
+}
+
+.drawer-container.drawer-fullscreen .drawer-content {
+    max-width: 100vw;
+}
+
+/* Cabecera del Drawer */
+.drawer-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 24px 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background-color-secondary);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.drawer-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.drawer-title-row h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+}
+
+.drawer-header .drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--secondary);
+    background: transparent;
+    border: none;
+    padding: 0;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.drawer-header .drawer-close svg {
+    width: 22px;
+    height: 22px;
+}
+
+.drawer-header .drawer-close:hover {
+    background-color: var(--bg-shadow);
+    color: var(--text);
+    transform: scale(1.08);
+}
+
+.drawer-header .drawer-close:active {
+    transform: scale(0.95);
+}
+
+.drawer-description {
+    margin: 0;
+    font-size: 0.90rem;
+    color: var(--dark);
+    line-height: 1.45;
+    text-align: start;
+}
+
+/* Cuerpo del Drawer (área con scroll interno independiente para formularios) */
+.drawer-body {
+    display: block;
+    flex: 1 1 auto;
+    width: 100%;
+    padding: 20px 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.drawer-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.drawer-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.drawer-body::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.drawer-body::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
+}
+
+/* Pie del Drawer (Footer fijo con botones de acción) */
+.drawer-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 16px 24px;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    background-color: var(--background-color-secondary);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.drawer-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.drawer-actions button {
+    margin: 0;
+}

@@ -1,0 +1,332 @@
+.table-container {
+    width: 100%;
+    height: auto;
+    overflow: auto;
+    padding: 10px 0 0 0;
+}
+
+caption {
+    border: 2px solid var(--border);
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+    background-color: transparent;
+    padding: 8px 12px;
+    font-weight: bold;
+    caption-side: top;
+}
+
+table {
+    width: 100%;
+    min-width: 600px;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--background-color-secondary);
+}
+
+
+th,
+td {
+    width: auto;
+    max-width: 300px;
+    max-height: 100px;
+    overflow: hidden;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+thead {
+    background-color: var(--bg-shadow);
+}
+
+tbody {
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+th:last-child,
+td:last-child {
+    border-bottom: 1px solid var(--border);
+    border-right: none;
+}
+
+/* Esquina superior izquierda */
+tr:first-child th:first-child {
+    border-top-left-radius: none;
+}
+
+/* Esquina superior derecha */
+tr:first-child th:last-child {
+    border-top-right-radius: none;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Esquina inferior izquierda */
+tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+/* Esquina inferior derecha */
+tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+th {
+    background-color: var(--background-color);
+    font-weight: bold;
+}
+
+tr:nth-child(2) {
+    background-color: transparent;
+}
+
+tbody tr:nth-child(even) {
+    background: var(--background-color);
+}
+
+tbody tr:nth-child(odd) {
+    background: var(--background-color-secondary);
+    /* Color para filas impares */
+}
+
+/* Contenedor del Empty State */
+.empty-row td {
+    padding: 0;
+    /* Reseteamos el padding para controlar el diseño desde el div */
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+/* Icono moderno y atenuado */
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    background-color: var(--bg-shadow);
+    padding: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Tipografía */
+.empty-title {
+    margin: 0 0 8px 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.empty-description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--shadow);
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+/* Columna y botones de acciones */
+.th-actions {
+    text-align: center;
+    width: 1%;
+    white-space: nowrap;
+}
+
+.td-actions {
+    text-align: center;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.td-actions {
+    display: table-cell;
+}
+
+.td-actions button {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.td-actions button svg {
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+}
+
+/* ==========================================================================
+   Badges / Pills de estado para celdas de la tabla (tipo • In stock)
+   ========================================================================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    gap: 6px;
+    padding: 0 12px;
+    height: 28px;
+    min-width: 96px;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1;
+    text-transform: capitalize;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.badge-icon,
+.badge-svg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    line-height: 0;
+}
+
+.badge svg,
+.badge-icon svg,
+.badge-svg svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    stroke: currentColor;
+    stroke-width: 2.2;
+}
+
+.badge-text {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Variantes de color */
+.badge.success {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge.success .badge-dot {
+    background-color: #10b981;
+}
+
+.badge.danger {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(231, 76, 60, 0.25);
+}
+
+.badge.danger .badge-dot {
+    background-color: #e74c3c;
+}
+
+.badge.secondary,
+.badge.ajuste {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.badge.secondary .badge-dot,
+.badge.ajuste .badge-dot {
+    background-color: #64748b;
+}
+
+.badge.warning {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(243, 156, 18, 0.25);
+}
+
+.badge.warning .badge-dot {
+    background-color: #f39c12;
+}
+
+.badge.info {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #2563eb;
+    border: 1px solid rgba(52, 152, 219, 0.25);
+}
+
+.badge.info .badge-dot {
+    background-color: #3498db;
+}
+
+/* Modo oscuro */
+body.dark-mode .badge.success {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #34d399;
+}
+
+body.dark-mode .badge.danger {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #f87171;
+}
+
+body.dark-mode .badge.secondary,
+body.dark-mode .badge.ajuste {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #cbd5e1;
+}
+
+body.dark-mode .badge.warning {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #fbbf24;
+}
+
+body.dark-mode .badge.info {
+    background-color: rgba(100, 116, 139, 0.12);
+    color: #60a5fa;
+}
+
+/* Imagen en celda */
+.table-img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 6px;
+    vertical-align: middle;
+}

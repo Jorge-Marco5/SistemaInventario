@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Inventario</title>
+  <script type="module" src="./main.js" defer></script>
+  <script src="./hooks/lib/dayjs.min.js"></script>
+  <script src="./hooks/lib/utc.js"></script>
+  <script src="./hooks/lib/timezone.js"></script>
+</head>
+
+<body>
+  <main class="container">
+    <div class="header">
+      <div class="section-header">
+        <label class="switch">
+          <input type="checkbox" id="theme-toggle">
+          <span class="slider">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-moon" viewBox="0 0 24 24">
+              <path fill="none" stroke="none" d="M0 0h24v24H0z" />
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
+              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-sun" viewBox="0 0 24 24">
+              <path fill="none" stroke="none" d="M0 0h24v24H0z" />
+              <circle cx="12" cy="12" r="4" />
+              <path d="M3 12h1m8-9v1m8 8h1m-9 8v1M5.6 5.6l.7.7m12.1-.7-.7.7m0 11.4.7.7m-12.1-.7-.7.7" />
+            </svg>
+          </span>
+        </label>
+      </div>
+      <div>
+        <div class="tab-component">
+          <div class="tabs-nav">
+            <span class="tab-btn active" data-target="products">Productos</span>
+            <span class="tab-btn" data-target="operations">Operaciones</span>
+            <span class="tab-btn" data-target="providers">Proveedores</span>
+            <span class="tab-btn" data-target="categories">Categorias</span>
+          </div>
+        </div>
+      </div>
+      <div class="section-header">
+        <div id="dropdown-usuarios" class="dropdown-container">
+          <span class="alert-dropdown"></span>
+          <button class="primary circle" data-toggle="dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+              height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bell">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+              <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+            </svg></button>
+          <div class="dropdown-content" data-menu="dropdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenedor donde se cargará el contenido dinámico -->
+    <div class="tab-container">
+      <div id="tab-content" class="tab-content fade-in">
+        <!-- El contenido inicial se inyectará aquí -->
+      </div>
+    </div>
+
+    <!-- Plantillas ocultas que JavaScript clonará -->
+    <template id="products">
+      <div class="titles">
+        <h1>Productos</h1>
+        <p>Lista de productos registrados en el sistema</p>
+      </div>
+      <div class="row-actions">
+        <div class="section-1">
+          <div class="search-container" id="search-container"></div>
+          <label for="fecha-input" id="search-lot-date" class="secondary circle" title="Buscar por fecha">
+            <span class="button secondary circle"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-search">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4.5" />
+                <path d="M16 3v4" />
+                <path d="M8 3v4" />
+                <path d="M4 11h16" />
+                <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg></span>
+          </label>
+          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+        </div>
+        <div class="section-2">
+          <button class="primary rounded" id="add-product-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 5l0 14" />
+              <path d="M5 12l14 0" />
+            </svg>
+            &nbsp;Nuevo producto
+          </button>
+        </div>
+      </div>
+      <div class="table-container" id="table-container"></div>
+      <div class="pagination-container" id="pagination-container"></div>
+    </template>
+
+    <template id="operations">
+      <div class="titles">
+        <h1>Operaciones</h1>
+        <p>Gestion de salidas, entradas y ajustes del stock en productos.</p>
+      </div>
+      <div class="row-actions">
+        <div class="section-1">
+        </div>
+        <div class="section-2">
+          <div class="search-container" id="search-container"></div>
+          <label for="fecha-input" id="search-lot-date" class="secondary circle" title="Buscar por fecha">
+            <span class="button secondary circle"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-search">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4.5" />
+                <path d="M16 3v4" />
+                <path d="M8 3v4" />
+                <path d="M4 11h16" />
+                <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg></span>
+          </label>
+          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+        </div>
+      </div>
+      <div class="table-container" id="table-container"></div>
+      <div class="pagination-container" id="pagination-container"></div>
+    </template>
+
+    <template id="lots">
+      <div class="titles">
+        <h1>Sección de lotes</h1>
+        <p>Gestiona los lotes registrados de un producto.</p>
+      </div>
+      <div class="row-actions">
+        <div class="section-1">
+          <div class="search-container" id="search-container"></div>
+          <label for="fecha-input" id="search-lot-date" class="secondary circle" title="Buscar por fecha">
+            <span class="button secondary circle"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-search">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4.5" />
+                <path d="M16 3v4" />
+                <path d="M8 3v4" />
+                <path d="M4 11h16" />
+                <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg></span>
+          </label>
+          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+        </div>
+        <div class="section-2">
+          <button class="success rounded" id="add-lot-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-square-chevrons-up">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M9 16l3 -3l3 3" />
+              <path d="M9 11l3 -3l3 3" />
+              <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14" />
+            </svg>
+            &nbsp;Entrada de stock
+          </button>
+          <button class="danger rounded" id="out-lot-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-square-chevrons-down">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M15 8l-3 3l-3 -3" />
+              <path d="M15 13l-3 3l-3 -3" />
+              <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14" />
+            </svg>
+            &nbsp;Salida de stock
+          </button>
+        </div>
+      </div>
+      <div class="table-container" id="table-container"></div>
+      <div class="pagination-container" id="pagination-container"></div>
+    </template>
+
+    <template id="providers">
+      <div class="titles">
+        <h1>Proveedores</h1>
+        <p>Gestiona los proveedores y su informacion en el sistema</p>
+      </div>
+    </template>
+
+    <template id="categories">
+      <div class="titles">
+        <h1>Categorias</h1>
+        <p>Gestiona las multiples categorias de tu sistema</p>
+      </div>
+      <div class="row-actions">
+        <div class="section-1">
+          <div class="search-container" id="search-container"></div>
+          <label for="fecha-input" id="search-lot-date" class="secondary circle" title="Buscar por fecha">
+            <span class="button secondary circle"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-search">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4.5" />
+                <path d="M16 3v4" />
+                <path d="M8 3v4" />
+                <path d="M4 11h16" />
+                <path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg></span>
+          </label>
+          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+        </div>
+        <div class="section-2">
+          <button class="primary rounded" id="add-category-modal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 5l0 14" />
+              <path d="M5 12l14 0" />
+            </svg>
+            &nbsp;Nueva categoria
+          </button>
+        </div>
+      </div>
+      <div class="table-container" id="table-container"></div>
+    </template>
+  </main>
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <div class="modal-text">
+          <div class="modal-title">
+            <h4>Titulo del modal</h4>
+            <span id="closeModal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M18 6l-12 12" />
+                <path d="M6 6l12 12" />
+              </svg>
+            </span>
+          </div>
+          <p></p>
+        </div>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <div class="modal-actions-1"></div>
+        <div class="modal-actions-2">
+          <button class="primary default">Aceptar</button>
+          <button class="outline default">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-container" id="drawer-container"></div>
+  <div class="toast-container" id="toast-container"></div>
+  <!--Servicios que reciben o envian datos al backend-->
+  <script src="./hooks/lib/var.js"></script>
+  <script src="./hooks/services/category.service.js"></script>
+  <script src="./hooks/services/provider.service.js"></script>
+  <script src="./hooks/services/product.service.js"></script>
+  <script src="./hooks/services/lot.service.js"></script>
+  <script src="./hooks/services/operationType.service.js"></script>
+  <script src="./hooks/services/operation.service.js"></script>
+  <!--Funciones de el sistema de inventario-->
+  <script src="./hooks/functions/category.functions.js"></script>
+  <script src="./hooks/functions/provider.functions.js"></script>
+  <script src="./hooks/functions/product.functions.js"></script>
+  <script src="./hooks/functions/operation_types.functions.js"></script>
+  <script src="./hooks/functions/lot.functions.js"></script>
+  <script src="./hooks/functions/operation.functions.js"></script>
+  <!--Logica de componentes cada pagina-->
+  <script src="./hooks/pages/categories.js"></script>
+  <script src="./hooks/pages/products.js"></script>
+  <script src="./hooks/pages/lots.js"></script>
+  <script src="./hooks/pages/operations.js"></script>
+  <!--Logica de componentes de la pagina-->
+  <script src="./hooks/components/toast.js"></script>
+  <script src="./hooks/components/table.js"></script>
+  <script src="./hooks/components/search.js"></script>
+  <script src="./hooks/components/dropdown.js"></script>
+  <script src="./hooks/components/pagination.js"></script>
+  <script src="./hooks/components/modal.js"></script>
+  <script src="./hooks/components/drawer.js"></script>
+  <script type="module" src="./hooks/router.js"></script>
+  <script src="./hooks/theme.js"></script>
+</body>
+
+</html>

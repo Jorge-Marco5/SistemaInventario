@@ -1,0 +1,131 @@
+.toast-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.toast {
+    background-color: var(--background-color-secondary);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: auto;
+    will-change: transform, opacity;
+}
+
+.toast span:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.toast .closeToast {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    border-radius: 50%;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast .closeToast:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.toast-message {
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Clase para mostrar el toast con Fade In */
+.toast.show {
+    animation: fadeInToast 0.35s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+/* Clase para ocultar el toast con Fade Out */
+.toast.hide {
+    animation: fadeOutToast 0.35s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+.toast.info {
+    background: var(--toast-shadow-info);
+}
+
+.toast.success {
+    background: var(--toast-shadow-success);
+}
+
+.toast.warning {
+    background: var(--toast-shadow-warning);
+}
+
+.toast.danger {
+    background: var(--toast-shadow-danger);
+}
+
+.toast.info span:first-child {
+    color: #2282ff;
+}
+
+.toast.success span:first-child {
+    color: #22b466;
+}
+
+.toast.warning span:first-child {
+    color: #ffcb22;
+}
+
+.toast.danger span:first-child {
+    color: #ff4322;
+}
+
+/* Definir la animación de entrada (Fade In + Desplazamiento suave) */
+@keyframes fadeInToast {
+    0% {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Definir la animación de salida (Fade Out + Desplazamiento suave) */
+@keyframes fadeOutToast {
+    0% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+}

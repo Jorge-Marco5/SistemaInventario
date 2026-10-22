@@ -1,0 +1,67 @@
+.pagination-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+}
+
+.pagination-container div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.pagination-container div span {
+    width: 32px;
+    height: 32px;
+    background-color: var(--background-color-secondary);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-container div div {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-container select {
+    width: 80px;
+    height: 32px;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.pagination-container div span.current {
+    background-color: var(--primary);
+    font-weight: bold;
+}
+
+.pagination-container div span.deactivate {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.pagination-container div span svg {
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+}

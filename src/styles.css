@@ -1,0 +1,133 @@
+@import url(./assets/css/theme.css);
+@import url(./assets/css/tabs.css);
+@import url(./assets/css/button.css);
+@import url(./assets/css/form.css);
+@import url(./assets/css/search.css);
+@import url(./assets/css/drawer.css);
+@import url(./assets/css/table.css);
+@import url(./assets/css/pagination.css);
+@import url(./assets/css/toast.css);
+@import url(./assets/css/modal.css);
+@import url(./assets/css/dropdown.css);
+@import url(./assets/css/notifications.css);
+
+:root {
+  --background-color: radial-gradient(circle at center, #ededed 0%, #ececed 100%);
+  --background-color-secondary: #FFFFFF;
+  --text: #000000;
+  --light: #ecf0f1;
+  --dark: #1e2a36;
+  --border: #d8d8d8;
+  --shadow: 0 1px 3px rgba(.0, 0, 0, 0.2);
+  --bg-shadow: rgba(220, 220, 220, 0.5);
+  --bg-code: #E7E8EC;
+  --text-code: #000000;
+  --sidebar-width: 250px;
+  --padding: 10px;
+  --radius: 10px;
+
+  --secondary: #46515f;
+  --success: #10b981;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --info: #3498db;
+
+  --toast-shadow-info: radial-gradient(circle at left, #d3e9f8, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-success: radial-gradient(circle at left, #d3f8e4, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-warning: radial-gradient(circle at left, #f8f3d3, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-danger: radial-gradient(circle at left, #f8d3d5, var(--background-color-secondary), var(--background-color-secondary));
+
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+
+/* Colores para el modo oscuro */
+body.dark-mode {
+  --secondary: #49515c;
+  --success: #10b981;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --info: #3498db;
+  --light: #ecf0f1;
+  --dark: #b1b1b1;
+  --background-color: radial-gradient(circle at center, #0d0d0d 0%, #0c0c0d 100%);
+  --background-color-secondary: #1e1e1e;
+  --text: #ffffff;
+  --border: #333;
+  --shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
+  --bg-shadow: rgba(13, 13, 13, 0.5);
+  --bg-code: #1B1B1C;
+  --text-code: #e2e8f0;
+
+  --toast-shadow-info: radial-gradient(circle at left, #203742, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-success: radial-gradient(circle at left, #204222, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-warning: radial-gradient(circle at left, #292719, var(--background-color-secondary), var(--background-color-secondary));
+  --toast-shadow-danger: radial-gradient(circle at left, #422023, var(--background-color-secondary), var(--background-color-secondary));
+
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  scrollbar-color: var(--bg) transparent;
+  scrollbar-width: thin;
+  scrollbar-track-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  max-height: 100dvh;
+  background: var(--background-color);
+  color: var(--text);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+.row-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.row-actions .section-1,
+.row-actions .section-2 {
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}

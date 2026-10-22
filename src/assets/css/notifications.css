@@ -1,0 +1,67 @@
+.dropdown-content .notify-head {
+    width: 400px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: start;
+    padding: 15px;
+}
+
+.dropdown-content .notify-body {
+    width: 400px;
+    max-height: 500px;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: start;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.dropdown-content .notify-body .card-notify {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding: 10px 10px;
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+    gap: 15px;
+}
+
+.dropdown-content .notify-body .card-notify .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-content .notify-body .card-notify .icon span {
+    width: 32px;
+    height: 32px;
+    background-color: var(--bg-shadow);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-content .notify-body .card-notify svg {
+    margin: 5px;
+}
+
+
+.dropdown-content .notify-body .card-notify .text {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.dropdown-content .notify-body .card-notify h4 {
+    font-size: 0.9rem;
+    text-align: start;
+}
+
+.dropdown-content .notify-body .card-notify p {
+    font-size: 0.8rem;
+    color: var(--dark);
+}
