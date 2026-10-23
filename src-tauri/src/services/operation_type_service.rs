@@ -15,7 +15,10 @@ impl OperationTypeService {
     }
 
     pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<OperationType, String> {
-        // 1. Validar que la categoría exista
+        if id  == 0 || id.is_negative() {
+            return Err("No se indica un tipo de operación valido.".to_string());
+        }
+        // 1. Validar que la categoría exista-
         let operations = OperationTypeRepository::find_one(pool, id)
             .await
             .map_err(|error| match error {

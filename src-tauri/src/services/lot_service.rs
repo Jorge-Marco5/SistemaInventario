@@ -27,14 +27,22 @@ impl LotService {
             .map_err(|error| error.to_string())
     }
 
-    pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<Lot, sqlx::Error> {
-        LotRepository::find_one(pool, id).await
+    pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<Lot, String> {
+        if id  == 0 || id.is_negative() {
+            return Err("No se indica un lote valido.".to_string());
+        }
+        LotRepository::find_one(pool, id).await.map_err(|error| error.to_string())
     }
 
     pub async fn find_lots_by_product(
         pool: &SqlitePool,
         product_id: i64,
     ) -> Result<Vec<Lot>, String> {
+
+        if product_id  == 0 || product_id.is_negative() {
+            return Err("No se indica un producto valido.".to_string());
+        }
+
         LotRepository::find_lots_by_product(pool, product_id)
             .await
             .map_err(|error| error.to_string())
@@ -45,6 +53,11 @@ impl LotService {
         product_id: i64,
         params: LotQueryParams,
     ) -> Result<PaginatedLots, String> {
+
+        if product_id == 0 || product_id.is_negative() {
+            return Err("No se indica un producto valido.".to_string());
+        }
+
         let limit = params.limit.unwrap_or(10).clamp(1, 100);
 
         let current_page = params.current_page.unwrap_or(1).max(1);
@@ -59,8 +72,13 @@ impl LotService {
     pub async fn count_stock_by_product(
         pool: &SqlitePool,
         product_id: i64,
-    ) -> Result<i64, sqlx::Error> {
-        LotRepository::count_stock_by_product(pool, product_id).await
+    ) -> Result<i64, String> {
+        if product_id  == 0 || product_id.is_negative() {
+            return Err("No se indica un producto valido.".to_string());
+        }
+        LotRepository::count_stock_by_product(pool, product_id)
+        .await
+        .map_err(|error| error.to_string())
     }
 
     pub async fn create(pool: &SqlitePool, data: CreateLot) -> Result<Lot, String> {
@@ -110,6 +128,10 @@ impl LotService {
     }
 
     pub async fn update(pool: &SqlitePool, id: i64, data: UpdateLot) -> Result<Lot, String> {
+        if id  == 0 || id.is_negative() {
+            return Err("No se indica un lote valido.".to_string());
+        }
+        
         let lot_exists = LotRepository::find_one(pool, id)
             .await
             .map_err(|error| match error {

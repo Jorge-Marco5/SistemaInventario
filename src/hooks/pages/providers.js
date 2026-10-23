@@ -113,16 +113,18 @@ class ProvidersPage {
                                         {
                                             name: "phone1",
                                             label: "Numero de telefono",
-                                            placeholder: "Numero de telefono del proveedor",
-                                            type: "number",
+                                            placeholder: "123 456 78 90",
+                                            type: "tel",
+                                            pattern:"[0-9]{10}",
                                             value: item.phone1,
-                                            required: true
+                                            required: true,
                                         },
                                         {
                                             name: "phone2",
                                             label: "Numero de telefono 2",
-                                            placeholder: "Numero de telefono alternativo del proveedor",
-                                            type: "number",
+                                            placeholder: "123 456 78 90",
+                                            type: "tel",
+                                            pattern:"[0-9]{10}",
                                             value: item.phone2,
                                         },
                                         {
@@ -281,15 +283,16 @@ class ProvidersPage {
                     {
                         name: "phone1",
                         label: "Numero de telefono",
-                        placeholder: "Numero de telefono del proveedor",
-                        type: "number",
-                        required: true
-                    },
-                    {
+                        placeholder: "123 456 78 90",
+                        type: "tel",
+                        pattern:"[0-9]{10}",
+                        required: true,
+                    },{
                         name: "phone2",
-                        label: "Numero de telefono 2",
-                        placeholder: "Numero de telefono alternativo del proveedor",
-                        type: "number",
+                        label: "Numero de telefono alternativo",
+                        placeholder: "123 456 78 90",
+                        type: "tel",
+                        pattern:"[0-9]{10}",
                     },
                     {
                         name: "email1",

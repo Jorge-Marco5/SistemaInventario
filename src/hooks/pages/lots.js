@@ -89,6 +89,7 @@ class LotsPage {
                                             label: 'Cantidad de stock que entra',
                                             placeholder: 'Cantidad de producto en el Lote',
                                             type: "number",
+                                            min:"1",
                                             value: item.stock,
                                             required: true
                                         },
@@ -232,6 +233,7 @@ class LotsPage {
                         label: 'Cantidad de stock que entra',
                         placeholder: 'Cantidad de producto en el Lote',
                         type: "number",
+                        min: "1",
                         required: true
                     },
                     {
@@ -304,6 +306,7 @@ class LotsPage {
                         label: 'Cantidad',
                         placeholder: 'Cantidad de producto a restar',
                         type: "number",
+                        min:1,
                         required: true
                     }
                 ],

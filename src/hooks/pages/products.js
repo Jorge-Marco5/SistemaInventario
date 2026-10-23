@@ -245,6 +245,7 @@ class ProductsPage {
                                             label: "Stock minimo",
                                             placeholder: "Stock minimo del producto en bodega",
                                             type: "number",
+                                            min: "0",
                                             value: product.stock_min,
                                             required: true
                                         },
@@ -499,6 +500,7 @@ class ProductsPage {
                         label: "Stock minimo",
                         placeholder: "Stock minimo del producto en bodega",
                         type: "number",
+                        min: "0",
                         required: true
                     },
                     {

@@ -508,6 +508,12 @@ class DrawerHandler {
                     if (field.step !== undefined) inputEl.setAttribute('step', field.step);
                     if (field.min !== undefined) inputEl.setAttribute('min', field.min);
                     if (field.max !== undefined) inputEl.setAttribute('max', field.max);
+                    if (field.pattern !== undefined) inputEl.setAttribute('pattern', field.pattern);
+                    
+                    if (fieldType === 'text'){
+                        if (field.maxlength !== undefined) inputEl.setAttribute('maxlength', field.maxlength);
+                    }
+
                     if (field.value !== undefined) {
                         if (fieldType === 'checkbox') {
                             inputEl.checked = Boolean(field.value);

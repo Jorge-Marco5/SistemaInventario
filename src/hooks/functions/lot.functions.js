@@ -10,6 +10,7 @@ async function createLot(data = {}) {
 
 async function updateLot(id, data = {}) {
     try {
+        if(!id) throw new Error("No se ingresó el lote a actualizar.")
         return await lotService.updateLot(id, data)
     } catch (error) {
         throw new Error('Error al actualizar los datos del lote: ' + error)
