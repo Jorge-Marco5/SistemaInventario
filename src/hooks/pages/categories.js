@@ -15,7 +15,6 @@ class CategoriesPage {
             let data = [];
             try {
                 data = await getCategories(search);
-                console.log(data)
             } catch (error) {
                 showToast("Error al obtener la lista de categorias", 'danger');
             }
@@ -38,6 +37,15 @@ class CategoriesPage {
                 ],
                 data: data,
                 actions: [
+                    {
+                        name: "watch_products",
+                        title: "Ver productos",
+                        className: "success square",
+                        html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-box"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>`,
+                        onClick: async (item, index) => {
+                            navigateTo('products', { search: item.name });
+                        }
+                    },
                     {
                         name: "edit",
                         title: "Editar categoria",
@@ -74,7 +82,6 @@ class CategoriesPage {
                                     }
                                 });
                                 if (!modalData) return;
-                                console.log(modalData);
                                 await updateCategory(Number(item.id), modalData);
                                 await loadCategoriesPage(currentSearch);
                                 showToast(`Categoria "${modalData.name}" actualizado correctamente`, "success");
@@ -136,7 +143,7 @@ class CategoriesPage {
         await loadCategoriesPage(currentSearch);
 
         /**
-         * Modal para agregar nuevos productos
+         * Modal para agregar nueva categoria
          */
         const btnAddCategorieModal = document.getElementById("add-category-modal")
         if (btnAddCategorieModal) {
@@ -154,14 +161,14 @@ class CategoriesPage {
                     {
                         name: "name",
                         label: "Nombre",
-                        placeholder: "Nombre del producto",
+                        placeholder: "Nombre de la categoria",
                         type: "text",
                         required: true
                     },
                     {
                         name: "description",
                         label: "Descripción",
-                        placeholder: "Descripcion del producto",
+                        placeholder: "Descripcion de la categoria",
                         type: "text",
                         required: true
                     }

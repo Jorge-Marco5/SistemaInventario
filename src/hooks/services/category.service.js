@@ -8,6 +8,14 @@ class CategoryService {
     }
 
     /**
+     * Obtiene la informacion de una categoria
+     */
+    async getCategoryById(id) {
+        return await invoke('get_category_by_id', { id });
+    }
+
+
+    /**
      * Registro de una nueva categoria
      * @param {{name:String, description: String}} data 
      * @returns 

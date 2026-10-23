@@ -57,6 +57,7 @@ pub fn run() {
             commands::users::update_user,
             commands::users::delete_user,
             commands::category::get_categories, //Categorias
+            commands::category::get_category_by_id,
             commands::category::create_category,
             commands::category::update_category,
             commands::provider::get_providers,

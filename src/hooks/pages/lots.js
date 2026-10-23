@@ -15,11 +15,11 @@ class LotsPage {
         } catch (error) {
             showToast("Error al obtener los datos del producto actual", 'danger')
         }
-
-        //aplicar nombrey descripcion del producto en el titulo
+        //aplicar nombre y descripcion del producto en el titulo
         const title = container.querySelector('.titles');
         title.querySelector('h1').textContent = `${product.name}`;
-        title.querySelector('p').textContent = `${product.description}`;
+        title.querySelector('h1').style.textDecoration = product.is_active ? '' : 'line-through';
+        title.querySelector('p').textContent = `${product.is_active ? product.description : 'El producto ya no está activo'}`;
 
         //funcion para generar la tabla en base a la informacion de la base de datos
         async function getData(search = searchData, limit, currentPage) {
@@ -48,6 +48,7 @@ class LotsPage {
                         title: "Editar lote",
                         className: "btn-edit square",
                         html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415" /><path d="M16 5l3 3" /></svg>`,
+                        disabled: product.is_active ? false : true,
                         onClick: async (item, index) => {
                             try {
                                 const updateProduct = await getProductById(Number(item.product_id));
@@ -114,7 +115,6 @@ class LotsPage {
                                 });
 
                                 if (!modalData) return;
-                                console.log(modalData);
                                 //actualizar la informacion
                                 await updateLot(item.id, modalData);
                                 await loadLotsPage(currentSearch, 1, currentLimit);
@@ -192,15 +192,19 @@ class LotsPage {
          * Registrar la entrada de stock de un producto
          */
         const btnAddStockModal = document.getElementById("add-lot-modal")
-        if (btnAddStockModal) {
+        btnAddStockModal.style.pointerEvents = product.is_active ? 'auto' : "none";
+        btnAddStockModal.style.opacity = product.is_active ? '1' : "0.5";
+        btnAddStockModal.style.cursor = product.is_active ? 'pointer' : "not-allowed";
+
+        if (btnAddStockModal && product.is_active) {
             btnAddStockModal.addEventListener('click', async (e) => {
                 e.preventDefault();
-                await renderFormAddProduct();
+                await renderFormInModal();
             });
         }
 
         //Funcion para mostrar la tarjeta con el formulario
-        async function renderFormAddProduct() {
+        async function renderFormInModal() {
             const customModal = {
                 title: "Entrada de stock",
                 description: " Permite registrar el ingreso de nuevos productos al almacén por compras a proveedores, devoluciones de clientes o ajustes manuales, se registra la operacion como 'entrada'",
@@ -214,6 +218,7 @@ class LotsPage {
                         name: "product_name",
                         label: "Nombre del producto al que se registra el lote",
                         type: "text",
+                        readOnly: true,
                         disabled: true,
                         value: product.name
                     }, {
@@ -260,7 +265,7 @@ class LotsPage {
                 showToast(`Lote "${modalData.lot_num}" creado correctamente`, "success");
             } catch (error) {
                 console.error(error);
-                showToast("Error al registrar el lote: " + error, "danger");
+                showToast(error || "Error al registrar el lote" + error, "danger");
             }
         }
 
@@ -268,7 +273,10 @@ class LotsPage {
          * Salida de stock de un producto
          */
         const btnOutStockModal = document.getElementById("out-lot-modal")
-        if (btnOutStockModal) {
+        btnOutStockModal.style.pointerEvents = product.is_active ? 'auto' : "none";
+        btnOutStockModal.style.opacity = product.is_active ? '1' : "0.5";
+        btnOutStockModal.style.cursor = product.is_active ? 'pointer' : "not-allowed";
+        if (btnOutStockModal && product.is_active) {
             btnOutStockModal.addEventListener('click', async (e) => {
                 e.preventDefault();
                 await renderFormOutModal();

@@ -51,6 +51,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
   miDropdownUsuarios.container.querySelector('.alert-dropdown').classList.add('active')
 
+  const backPage = document.querySelector('#back-page');
+  backPage.addEventListener('click', (e) => {
+    window.history.back();
+  })
+
+  const forwardPage = document.querySelector('#forward-page');
+  forwardPage.addEventListener('click', (e) => {
+    window.history.go();
+  })
+
   // Controlador para el template 'home'
   registerTab("products", {
     async mount(container, params) {
@@ -91,6 +101,17 @@ window.addEventListener("DOMContentLoaded", () => {
     async mount(container, params = {}) {
       const categoriesPage = new CategoriesPage();
       await categoriesPage.logicCategoriesPage(container, params);
+    },
+    unmount(container) {
+      //console.log("[Profile] Template desmontado");
+    }
+  });
+
+  // Controlador para el template 'operations'
+  registerTab("providers", {
+    async mount(container, params = {}) {
+      const providersPage = new ProvidersPage();
+      await providersPage.logicProvidersPage(container, params);
     },
     unmount(container) {
       //console.log("[Profile] Template desmontado");

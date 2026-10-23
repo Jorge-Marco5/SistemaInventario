@@ -6,10 +6,10 @@
 
 .search-container div {
     width: 54px;
-    height: 54px;
+    height: 42px;
     background-color: var(--background-color-secondary);
     color: var(--text);
-    border-radius: 50px;
+    border-radius: 8px;
     display: flex;
     flex-direction: row;
     align-items: center;

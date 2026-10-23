@@ -11,6 +11,11 @@
 @import url(./assets/css/dropdown.css);
 @import url(./assets/css/notifications.css);
 
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/Inter-Italic-VariableFont_opsz\,wght.ttf') format('ttf');
+}
+
 :root {
   --background-color: radial-gradient(circle at center, #ededed 0%, #ececed 100%);
   --background-color-secondary: #FFFFFF;
@@ -36,11 +41,6 @@
   --toast-shadow-success: radial-gradient(circle at left, #d3f8e4, var(--background-color-secondary), var(--background-color-secondary));
   --toast-shadow-warning: radial-gradient(circle at left, #f8f3d3, var(--background-color-secondary), var(--background-color-secondary));
   --toast-shadow-danger: radial-gradient(circle at left, #f8d3d5, var(--background-color-secondary), var(--background-color-secondary));
-
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -73,11 +73,6 @@ body.dark-mode {
   --toast-shadow-warning: radial-gradient(circle at left, #292719, var(--background-color-secondary), var(--background-color-secondary));
   --toast-shadow-danger: radial-gradient(circle at left, #422023, var(--background-color-secondary), var(--background-color-secondary));
 
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -89,6 +84,11 @@ body.dark-mode {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 450;
+  font-style: normal;
 
   scrollbar-color: var(--bg) transparent;
   scrollbar-width: thin;

@@ -1,10 +1,14 @@
 .header {
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    z-index: 1000;
 }
 
 .header .section-header {
@@ -54,6 +58,7 @@
 }
 
 .tab-content {
+    margin-top: 40px;
     opacity: 0;
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
@@ -68,6 +73,10 @@
     text-align: start;
     gap: 10px;
     margin-bottom: 10px;
+}
+
+.tab-content .titles h1 {
+    font-weight: bold;
 }
 
 .fade-in {

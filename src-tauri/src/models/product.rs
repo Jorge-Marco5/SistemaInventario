@@ -75,6 +75,7 @@ pub struct Product {
     pub provider_id: i64,
     pub category_id: i64,
     pub is_active: i64,
+    pub is_deleted: i64,
     pub created_at: String,
 }
 
@@ -106,5 +107,6 @@ pub struct ProductFull {
     pub provider_id: i64,
     pub category_id: i64,
     pub is_active: i64,
+    pub is_deleted: i64,
     pub created_at: String,
 }

@@ -15,6 +15,11 @@ pub async fn get_categories(
 }
 
 #[tauri::command]
+pub async fn get_category_by_id(state: State<'_, AppState>, id: i64) -> Result<Category, String> {
+    CategoryService::find_one(&state.db, id).await
+}
+
+#[tauri::command]
 pub async fn create_category(
     state: State<'_, AppState>,
     data: CreateCategory,

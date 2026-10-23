@@ -14,6 +14,12 @@ impl CategoryService {
             .map_err(|error| error.to_string())
     }
 
+    pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<Category, String> {
+        CategoryRepository::find_one(pool, id)
+            .await
+            .map_err(|error| error.to_string())
+    }
+
     pub async fn create(pool: &SqlitePool, data: CreateCategory) -> Result<Category, String> {
         let name = data.name.trim();
 

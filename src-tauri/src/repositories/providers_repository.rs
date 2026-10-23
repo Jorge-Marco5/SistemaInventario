@@ -26,12 +26,15 @@ impl ProviderRepository {
                 SELECT COUNT(*)
                 FROM provider
                 WHERE
-                    name LIKE ? ESCAPE '\'
-                    OR email1 LIKE ? ESCAPE '\'
-                    OR email2 LIKE ? ESCAPE '\'
-                    OR phone1 LIKE ? ESCAPE '\'
-                    OR phone2 LIKE ? ESCAPE '\'
-                    OR created_at LIKE ? ESCAPE '\'
+                    is_deleted = 0
+                    AND (
+                        name LIKE ? ESCAPE '\'
+                        OR email1 LIKE ? ESCAPE '\'
+                        OR email2 LIKE ? ESCAPE '\'
+                        OR phone1 LIKE ? ESCAPE '\'
+                        OR phone2 LIKE ? ESCAPE '\'
+                        OR created_at LIKE ? ESCAPE '\'
+                    )
                 "#,
         )
         .bind(&search)
@@ -52,15 +55,19 @@ impl ProviderRepository {
                     phone2,
                     email1,
                     email2,
+                    is_deleted,
                     created_at
                 FROM provider
                 WHERE
-                    name LIKE ? ESCAPE '\'
-                    OR phone1 LIKE ? ESCAPE '\'
-                    OR phone2 LIKE ? ESCAPE '\'
-                    OR email1 LIKE ? ESCAPE '\'
-                    OR email2 LIKE ? ESCAPE '\'
-                    OR created_at LIKE ? ESCAPE '\'
+                    is_deleted = 0
+                    AND (
+                        name LIKE ? ESCAPE '\'
+                        OR phone1 LIKE ? ESCAPE '\'
+                        OR phone2 LIKE ? ESCAPE '\'
+                        OR email1 LIKE ? ESCAPE '\'
+                        OR email2 LIKE ? ESCAPE '\'
+                        OR created_at LIKE ? ESCAPE '\'
+                    )
                 ORDER BY id DESC
                 LIMIT ?
                 OFFSET ?
@@ -102,6 +109,7 @@ impl ProviderRepository {
                 phone2,
                 email1,
                 email2,
+                is_deleted,
                 created_at
             FROM provider
             WHERE id = ?
@@ -133,6 +141,7 @@ impl ProviderRepository {
                 phone2,
                 email1,
                 email2,
+                is_deleted,
                 created_at
             "#,
         )
@@ -161,6 +170,7 @@ impl ProviderRepository {
                 phone2,
                 email1,
                 email2,
+                is_deleted,
                 created_at
             "#,
         )
@@ -177,7 +187,8 @@ impl ProviderRepository {
     pub async fn delete(pool: &SqlitePool, id: i64) -> Result<bool, sqlx::Error> {
         let result = sqlx::query(
             r#"
-            DELETE FROM provider
+            UPDATE provider
+            SET is_deleted = 1
             WHERE id = ?
             "#,
         )

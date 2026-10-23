@@ -4,57 +4,59 @@ async function getProviders(q, limit, currentPage) {
     try {
         return await providerService.getProviders(q, limit, currentPage);
     } catch (error) {
-        console.error("Error al listar los proveedores: " + error);
+        throw new Error("Error al listar los proveedores: " + error);
     }
 }
 
 async function getProviderById(provider_id) {
     try {
+        if (!provider_id) {
+            throw new Error("Ingresa el id del proveedor")
+        }
         return await providerService.getProvider(provider_id);
     } catch (error) {
-        console.error("Error al listar los proveedores: " + error);
+        throw new Error("Error al listar los proveedores: " + error);
     }
 }
 
-async function createProvder() {
+async function createProvider(data) {
     try {
-        const newProvider = {
-            name: "Coca Cola",
-            phone1: "987654321",
-            phone2: "",
-            email1: "cocacola@example.com",
-            email2: "cocacola2@example.com",
-        };
-
-        await providerService.createProvider(newProvider);
-        console.log("Proveedor registrado correctamente");
+        if (!data) {
+            return;
+        }
+        if (!data.phone1 || !data.email1) {
+            throw new Error("Numero de telefono y email no pueden quedar vacios")
+        }
+        data.phone1 = data.phone1.toString();
+        data.phone2 ? data.phone2 = data.phone2.toString() : '';
+        return await providerService.createProvider(data);
     } catch (error) {
-        console.error("Error al registrar proveedor");
+        console.error(error)
+        throw new Error("Error al registrar proveedor: " + error);
     }
 }
 
-async function updateProvider() {
+async function updateProvider(id, data) {
     try {
-        const updateProvider = {
-            name: "Paper Mate",
-            phone1: "978654321",
-            phone2: "",
-            email1: "papermate@example.com",
-            email2: "papermate2@example.com",
-        };
-
-        await providerService.updateProvider(6, updateProvider);
-        console.log("Proveedor actualizado correctamente");
+        if (!data) {
+            return;
+        }
+        if (!data.phone1 || !data.email1) {
+            throw new Error("Numero de telefono y email no pueden quedar vacios")
+        }
+        data.phone1 = data.phone1.toString();
+        data.phone2 ? data.phone2 = data.phone2.toString() : '';
+        return await providerService.updateProvider(Number(id), data);
     } catch (error) {
-        console.error("Error al actualizar proveedor");
+        console.error(error)
+        throw new Error("Error al actualizar proveedor: " + error);
     }
 }
 
 async function deleteProvider(id) {
     try {
-        await providerService.deleteProvider(id);
-        console.log("Proveedor eliminado correctamente");
+        return await providerService.deleteProvider(id);
     } catch (error) {
-        console.error("Error al eliminar proveedor");
+        throw new Error("Error al eliminar proveedor");
     }
 }

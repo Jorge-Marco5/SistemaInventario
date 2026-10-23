@@ -14,9 +14,9 @@ pub struct CreateProvider {
 pub struct UpdateProvider {
     pub name: String,
     pub phone1: String,
-    pub phone2: String,
+    pub phone2: Option<String>,
     pub email1: String,
-    pub email2: String,
+    pub email2: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -42,8 +42,9 @@ pub struct Provider {
     pub id: i64,
     pub name: String,
     pub phone1: String,
-    pub phone2: String,
+    pub phone2: Option<String>,
     pub email1: String,
-    pub email2: String,
+    pub email2: Option<String>,
+    pub is_deleted: i64,
     pub created_at: String,
 }

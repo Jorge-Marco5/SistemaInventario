@@ -60,11 +60,10 @@ async function createProduct(data = {}) {
         data.price_shop = Number(data.price_shop);
         data.provider_id = Number(data.provider_id);
         data.category_id = Number(data.category_id);
-        data.is_active = 0;
-        console.log("Producto registrado correctamente");
+        data.is_active = Number(data.is_active !== undefined ? data.is_active : 1);
         return await productService.createProduct(data);
     } catch (error) {
-        console.error(error || "Error al registrar el nuevo producto");
+        throw new Error(error || "Error al registrar el nuevo producto");
     }
 }
 
@@ -100,11 +99,9 @@ async function updateProduct(id, data = {}) {
         data.price_shop = Number(data.price_shop);
         data.provider_id = Number(data.provider_id);
         data.category_id = Number(data.category_id);
-        data.is_active = 0;
-        console.log("Producto registrado correctamente");
         return await productService.updateProduct(Number(id), data);
     } catch (error) {
-        console.error(error || "Error al registrar el nuevo producto");
+        throw new Error(error || "Error al registrar el nuevo producto");
     }
 }
 
@@ -115,10 +112,9 @@ async function updateProduct(id, data = {}) {
  */
 async function deleteProduct(id) {
     try {
-        console.log("Producto eliminado correctamente");
         return await productService.deleteProduct(Number(id));
     } catch (error) {
-        console.error("Error al eliminar el producto: " + error);
+        throw new Error("Error al eliminar el producto: " + error);
     }
 }
 
@@ -134,7 +130,7 @@ async function getProductsByCategory(category_id) {
         }
         return await productService.getProductsByCategory(Number(category_id));
     } catch (error) {
-        console.error("Error al obtener los productos: " + error);
+        throw new Error("Error al obtener los productos: " + error);
     }
 }
 
@@ -149,7 +145,7 @@ async function getProductsByProvider(provider_id) {
         }
         return await productService.getProductsByProvider(Number(provider_id));
     } catch (error) {
-        console.error("Error al obtener los productos: " + error);
+        throw new Error("Error al obtener los productos: " + error);
     }
 }
 
@@ -161,7 +157,7 @@ async function getLotsByProduct(product_id, q, limit, currentPage) {
     try {
         return await lotService.getLotsByProduct(product_id, q, limit, currentPage);
     } catch (error) {
-        console.error('Error al obtener los lotes del producto: ' + error);
+        throw new Error('Error al obtener los lotes del producto: ' + error);
     }
 }
 
@@ -177,7 +173,7 @@ async function outStockByProduct(product_id, quantity) {
         }
         return await productService.outStockByProduct(Number(product_id), Number(quantity));
     } catch (error) {
-        console.error(error)
+        throw new Error(error)
     }
 }
 
@@ -193,6 +189,6 @@ async function count_stock_by_product(product_id) {
         }
         return await lotService.countStockByProduct(Number(product_id));
     } catch (error) {
-        console.error('Error al obtener el stock')
+        throw new Error('Error al obtener el stock')
     }
 }

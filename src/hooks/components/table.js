@@ -279,6 +279,13 @@ class TableHandler {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = action.className || 'btn-table-action square';
+                    btn.disabled = typeof action.disabled === 'function' ? action.disabled(item, index) : Boolean(action.disabled);
+                    if (btn.disabled) {
+                        btn.style.opacity = '0.5';
+                        btn.style.pointerEvents = "none";
+                        btn.style.cursor = "not-allowed";
+                    }
+
                     if (action.title) {
                         btn.title = action.title;
                     }
@@ -294,6 +301,9 @@ class TableHandler {
                     btn.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        if (btn.disabled) {
+                            return;
+                        }
                         if (typeof action.onClick === 'function') {
                             action.onClick(item, index, tr);
                         }

@@ -68,53 +68,66 @@ class OperationsPage {
                             }
                             let operationName = '';
                             let sign = '';
-                            let prices = '';
+                            let priceMessage = '';
+                            let quantityMessage = '';
                             const unitPrice = formatCurrency(item.price, true);
                             const totalAmount = formatCurrency(Number(item.price) * Number(item.q), true);
 
                             if (item.operation_name === 'entrada') {
+                                priceMessage = 'Precio unitario de proveedor';
+                                quantityMessage = 'Cant. comprada';
                                 sign = '<span style="color:var(--success);">+</span>';
                                 operationName = `<span style="font-weight:bold; color:var(--success);">${item.operation_name.toUpperCase()}</span>`;
-                                prices = `<p>Precio unitario de compra al proveedor</p>
-                                <h4 style="font-size:1.2rem;">${unitPrice}</h4>
-                                <br>
-                                <p>Total de la operación</p>
-                                <h4 style="font-size:1.2rem;">${totalAmount}</h4>`;
                             } else if (item.operation_name === 'salida') {
+                                priceMessage = 'Precio unitario de venta';
+                                quantityMessage = 'Cant. vendida';
                                 sign = '<span style="color:var(--danger);">-</span>';
                                 operationName = `<span style="font-weight:bold; color:var(--danger);">${item.operation_name.toUpperCase()}</span>`;
-                                prices = `<p>Precio unitario de venta al publico</p>
-                                <h4 style="font-size:1.2rem;">${unitPrice}</h4>
-                                <br>
-                                <p>Total de la operación</p>
-                                <h4 style="font-size:1.2rem;">${totalAmount}</h4>`;
                             } else if (item.operation_name === 'ajuste') {
+                                priceMessage = 'Precio unitario en el momento';
+                                quantityMessage = 'Cant. ajustada';
                                 sign = '<span style="color: var(--info);">=</span>';
                                 operationName = `<span style="font-weight:bold; color:var(--info);">${item.operation_name.toUpperCase()}</span>`;
-                                prices = `<p>Precio unitario de venta al momento de la operación</p>
-                                <h4 style="font-size:1.2rem;">${unitPrice}</h4>
-                                <br>
-                                <p>Total de la operación</p>
-                                <h4 style="font-size:1.2rem;">${totalAmount}</h4>`;
                             }
-                            console.log(item)
 
                             const options = {
-                                size: 'md',
+                                size: 'lg',
                                 bodyContent: `
-                                <p>Producto - Cantidad</p>
-                                <h4 style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;">${product.barcode} - ${product.name} <span style="font-size:1.3rem; "><strong>${sign} ${item.q}</strong></span></h4>
-                                <br>
-                                ${prices}
-                                <br>
-                                <p>Operación</p>
-                                <h4 style="font-size:1.2rem;">${operationName}</h4>
-                                <br>
-                                <p>Descripcion de la Operación</p>
-                                <h4 style="font-size:1rem;">${item.description || 'No hay descripcion de la operacion'}</h4>
-                                <br>
-                                <p>Fecha</p>
-                                <h4 style="font-size:1.2rem;">${dayjs.utc(item.created_at).tz('America/Mexico_City').format("DD/MM/YYYY HH:mm")}</h4>
+                                <table style="margin-top:5px; min-width: 0px; border-collapse: collapse;">
+                                    <tr>
+                                        <th colspan="3">Tipo de operacion</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">${operationName}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>${quantityMessage}</th>
+                                        <th>${priceMessage}</th>
+                                    </tr>    
+                                    <tr>
+                                        <td>${product.barcode + ' - ' + product.name || 'Sin nombre del producto'}</td>
+                                        <td><span style="font-size:1.3rem; font-weight: bold;">${sign} ${item.q}</span></td>
+                                        <td>${unitPrice}</td>
+                                    </tr>
+                                    <tr></tr>
+                                    <tr>
+                                        <th colspan="2" style="background-color:var(--background-color-secondary);">Precio Total</th>
+                                        <td>${totalAmount}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">Descripcion de la operacion</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align: start; white-space: inherit; overflow: auto; text-overflow: ellipsis;">${item.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">Fecha</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">${dayjs.utc(item.created_at).tz('America/Mexico_City').format("DD/MM/YYYY HH:mm")}</td>
+                                    </tr>
+                                </table>
                                 `
                             }
 

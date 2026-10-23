@@ -17,7 +17,7 @@ async function createCategory(data) {
         data.image = '';
         return await categoryService.createCategory(data);
     } catch (error) {
-        console.error(error || "Error al crear la categoria");
+        throw new Error("Error al crear la categoria");
     }
 }
 
@@ -26,7 +26,7 @@ async function updateCategory(id, data) {
         data.image = '';
         return await categoryService.updateCategory(Number(id), data);
     } catch (error) {
-        console.error("Error al actualizar la categoria: " + error);
+        throw new Error("Error al actualizar la categoria");
     }
 }
 
@@ -34,6 +34,14 @@ async function getCategories(search) {
     try {
         return await categoryService.getCategories(search);
     } catch (error) {
-        console.error("Error al realizar operaciones en categorias");
+        throw new Error("Error al obtener las categorias");
+    }
+}
+
+async function getCategoryById(category_id) {
+    try {
+        return await categoryService.getCategoryById(category_id);
+    } catch (error) {
+        throw new Error("Error al obtener informacion de la categoria");
     }
 }

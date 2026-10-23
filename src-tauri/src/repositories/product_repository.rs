@@ -26,14 +26,20 @@ impl ProductRepository {
         let total: i64 = sqlx::query_scalar(
             r#"
                 SELECT COUNT(*)
-                FROM product
+                FROM product p
+                INNER JOIN category c on c.id = p.category_id
                 WHERE
-                    name LIKE ? ESCAPE '\'
-                    OR barcode LIKE ? ESCAPE '\'
-                    OR description LIKE ? ESCAPE '\'
-                    OR created_at LIKE ? ESCAPE '\'
+                    p.is_deleted = 0
+                    AND (
+                        p.name LIKE ? ESCAPE '\'
+                        OR p.barcode LIKE ? ESCAPE '\'
+                        OR p.description LIKE ? ESCAPE '\'
+                        OR c.name LIKE ? ESCAPE '\'
+                        OR p.created_at LIKE ? ESCAPE '\'
+                    )
                 "#,
         )
+        .bind(&search)
         .bind(&search)
         .bind(&search)
         .bind(&search)
@@ -57,21 +63,29 @@ impl ProductRepository {
                 p.presentation,
                 p.provider_id,
                 p.category_id,
+                c.name as category_name,
                 p.is_active,
+                p.is_deleted,
                 p.created_at
                 FROM product p
+                INNER JOIN category c on c.id = p.category_id
                 LEFT JOIN lot l ON l.product_id = p.id
                 WHERE
-                    p.name LIKE ? ESCAPE '\'
-                    OR p.barcode LIKE ? ESCAPE '\'
-                    OR p.description LIKE ? ESCAPE '\'
-                    OR p.created_at LIKE ? ESCAPE '\'
+                    p.is_deleted = 0
+                    AND (
+                        p.name LIKE ? ESCAPE '\'
+                        OR p.barcode LIKE ? ESCAPE '\'
+                        OR p.description LIKE ? ESCAPE '\'
+                        OR c.name LIKE ? ESCAPE '\'
+                        OR p.created_at LIKE ? ESCAPE '\'
+                    )
                 GROUP BY p.id, p.name
                 ORDER BY p.id DESC
                 LIMIT ?
                 OFFSET ?
                 "#,
         )
+        .bind(&search)
         .bind(&search)
         .bind(&search)
         .bind(&search)
@@ -114,10 +128,11 @@ impl ProductRepository {
             p.provider_id,
             p.category_id,
             p.is_active,
+            p.is_deleted,
             p.created_at 
             FROM product p
             LEFT JOIN (SELECT COALESCE(SUM(stock), 0)as stock_total, product_id FROM lot where stock > 0) as st ON p.id = st.product_id
-            WHERE id = ?
+            WHERE p.id = ?
             "#,
         )
         .bind(id)
@@ -164,7 +179,8 @@ impl ProductRepository {
             r#"
                 SELECT COUNT(*)
                 FROM product
-                WHERE category_id = ? 
+                WHERE is_deleted = 0
+                    AND category_id = ? 
                     AND (name LIKE ? ESCAPE '\'
                     OR barcode LIKE ? ESCAPE '\'
                     OR description LIKE ? ESCAPE '\'
@@ -195,10 +211,12 @@ impl ProductRepository {
                 provider_id,
                 category_id,
                 is_active,
+                is_deleted,
                 created_at
                 FROM product
                 WHERE
-                    category_id = ?
+                    is_deleted = 0
+                    AND category_id = ?
                     AND (name LIKE ? ESCAPE '\'
                     OR barcode LIKE ? ESCAPE '\'
                     OR description LIKE ? ESCAPE '\'
@@ -253,7 +271,8 @@ impl ProductRepository {
             r#"
                 SELECT COUNT(*)
                 FROM product
-                WHERE provider_id = ? 
+                WHERE is_deleted = 0
+                    AND provider_id = ? 
                     AND (name LIKE ? ESCAPE '\'
                     OR barcode LIKE ? ESCAPE '\'
                     OR description LIKE ? ESCAPE '\'
@@ -284,10 +303,12 @@ impl ProductRepository {
                 provider_id,
                 category_id,
                 is_active,
+                is_deleted,
                 created_at
                 FROM product
                 WHERE
-                    provider_id = ?
+                    is_deleted = 0
+                    AND provider_id = ?
                     AND (name LIKE ? ESCAPE '\'
                     OR barcode LIKE ? ESCAPE '\'
                     OR description LIKE ? ESCAPE '\'
@@ -355,6 +376,7 @@ impl ProductRepository {
                 provider_id,
                 category_id,
                 is_active,
+                is_deleted,
                 created_at
             "#,
         )
@@ -409,6 +431,7 @@ impl ProductRepository {
                 provider_id,
                 category_id,
                 is_active,
+                is_deleted,
                 created_at
             "#,
         )
@@ -432,7 +455,8 @@ impl ProductRepository {
     pub async fn delete(pool: &SqlitePool, id: i64) -> Result<bool, sqlx::Error> {
         let result = sqlx::query(
             r#"
-            DELETE FROM product
+            UPDATE product
+            SET is_deleted = 1, is_active = 0
             WHERE id = ?
             "#,
         )

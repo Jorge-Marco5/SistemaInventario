@@ -195,6 +195,12 @@ impl ProductService {
                 _ => format!("Error al verificar el producto: {}", error),
             })?;
 
+        if product.is_active == 0 {
+            return Err(
+                "El producto está inactivo, no se puede realizar ninguna operación".to_string(),
+            );
+        }
+
         // 2. Consultar el total de stock disponible en bodega entre todos los lotes
         let total_stock = LotRepository::count_stock_by_product(pool, product_id)
             .await

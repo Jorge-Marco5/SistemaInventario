@@ -69,7 +69,7 @@ impl LotService {
                 "El stock no puede ingresar con una cantidad menor o igual a cero".to_string(),
             );
         }
-        ProductRepository::find_one(pool, data.product_id)
+        let product = ProductRepository::find_one(pool, data.product_id)
             .await
             .map_err(|error| match error {
                 sqlx::Error::RowNotFound => {
@@ -77,6 +77,12 @@ impl LotService {
                 }
                 _ => format!("Error al verificar el producto: {}", error),
             })?;
+
+        if product.is_active == 0 {
+            return Err(
+                "El producto está inactivo, no se puede realizar ninguna operación".to_string(),
+            );
+        }
 
         let product_id = data.product_id;
         let stock = data.stock;
@@ -112,6 +118,21 @@ impl LotService {
                 }
                 _ => format!("Error al verificar el lote"),
             })?;
+
+        let product = ProductRepository::find_one(pool, lot_exists.product_id)
+            .await
+            .map_err(|error| match error {
+                sqlx::Error::RowNotFound => {
+                    format!("El producto no existe")
+                }
+                _ => format!("Error al verificar el producto: {}", error),
+            })?;
+
+        if product.is_active == 0 {
+            return Err(
+                "El producto está inactivo, no se puede realizar ninguna operación".to_string(),
+            );
+        }
 
         let stock = data.stock;
         let lot = LotRepository::update(pool, id, data)

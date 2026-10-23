@@ -8,21 +8,18 @@ class ProductsPage {
     async logicProductsPage(container, params) {
 
         let searchData = '';
-        localStorage.setItem('queryLotsByProduct', 0)
-
 
         async function getData(search = searchData, limit, currentPage) {
             let data = [];
             try {
                 data = await getProducts(search, limit, currentPage);
-                console.log(data)
             } catch (error) {
                 showToast("Error al obtener la lista de productos: " + error, 'danger');
             }
 
             //aplicar nombrey descripcion del producto en el titulo
             const title = container.querySelector('.titles');
-            title.querySelector('h1').textContent = `Productos (${data.total})`;
+            title.querySelector('h1').textContent = `Productos (${data.productsFull.length})`;
 
             let categoryOptions = [];
             try {
@@ -79,11 +76,6 @@ class ProductsPage {
                         header: "Precio de venta",
                         field: "price_shop",
                         formatter: (val) => formatCurrency(val)
-                    },
-                    {
-                        header: "Fecha de registro",
-                        field: "created_at",
-                        formatter: (val) => `${dayjs.utc(val).tz('America/Mexico_City').format("DD/MM/YYYY HH:mm") || ''}`
                     }
                 ],
                 data: data.productsFull,
@@ -92,9 +84,114 @@ class ProductsPage {
                         name: 'admin_stock',
                         title: 'Administrar stock',
                         className: 'success square',
-                        html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-stack-3"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l-8 4l8 4l8 -4l-8 -4" /><path d="M4 10l8 4l8 -4" /><path d="M4 18l8 4l8 -4" /><path d="M4 14l8 4l8 -4" /></svg>`,
+                        html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>`,
                         onClick: async (item, index) => {
                             navigateTo('lots', { productId: item.id, productName: item.name });
+                        }
+                    },
+                    {
+                        name: 'product_info',
+                        title: 'Información del producto',
+                        className: 'primary square',
+                        html: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-info-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>`,
+                        onClick: async (item, index) => {
+                            let provider = {};
+                            let category = {};
+                            if (item?.provider_id && item?.category_id) {
+                                try {
+                                    provider = await getProviderById(Number(item.provider_id));
+                                    category = await getCategoryById(Number(item.category_id));
+                                } catch (e) {
+                                    console.error("Error al obtener la informacion completa:", e);
+                                }
+                            }
+
+                            const options = {
+                                size: 'md',
+                                bodyContent: `
+                                <h3>Detalles del producto:</h3>
+                                <table style="margin-top:5px; min-width: 0px; table-layout: fixed;  border-collapse: collapse;">
+                                    ${item.is_active ? '' : `<tr><th colspan="2" style="color:var(--danger);">El producto ya no está en activo</th></tr>`}
+                                    <tr>
+                                        <th colspan="2">Nombre del producto</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">${item.name || 'Sin nombre del producto'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Descripción del producto</th>
+                                    </tr>    
+                                    <tr>
+                                        <td colspan="2">${item.description || 'Sin descripcion del producto'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Codigo de barras</tg>
+                                    </tr>    
+                                    <tr>
+                                        <td colspan="2">${item.barcode || 'Sin codigo de barras'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Categoria</tg>
+                                    </tr>  
+                                    <tr>
+                                        <td colspan="2">${category.name || 'Sin categoria'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Unidad</th>
+                                        <th>Presentación</th>
+                                    </tr>    
+                                    <tr>
+                                        <td>${item.unit || ''}</td>
+                                        <td>${item.presentation || ''}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Stock total</th>
+                                        <th>Stock minimo</td>
+                                    </tr>    
+                                    <tr>
+                                        <td>${item.stock_total || '0'}</td>
+                                        <td>${item.stock_min || '0'}</td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <h3>Precios del producto:</h3>
+                                <table style="margin-top:5px; min-width: 0px; table-layout: fixed;  border-collapse: collapse;">
+                                    <tr>
+                                        <th>Precio de compra</th>
+                                        <th>Precio de venta</th>
+                                    </tr>    
+                                    <tr>
+                                        <td>${formatCurrency(item.price_in) || '$0.00'}</td>
+                                        <td>${formatCurrency(item.price_shop) || '$0.00'}</td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <h3>Detalles del proveedor:</h3>
+                                <table style="margin-top:5px; min-width: 0px; table-layout: fixed;  border-collapse: collapse;">
+                                    <tr>
+                                        <th colspan="2">Nombre del proveedor</th>
+                                    </tr>    
+                                    <tr>
+                                        <td colspan="2">${provider.name || 'Sin nombre del proveedor'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Numero de telefono</th>
+                                    </tr>    
+                                    <tr>
+                                        <td colspan="2">${provider.phone1 || 'Sin numero de telefono'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Correo Electronico</th>
+                                    </tr>    
+                                    <tr>
+                                        <td colspan="2">${provider.email1 || 'Sin correo electronico'}</td>
+                                    </tr>
+                                </table>
+                                `
+                            }
+
+                            await modalHandler.callModalMessage(`Informacion del producto`,
+                                "", options)
                         }
                     },
                     {
@@ -243,7 +340,6 @@ class ProductsPage {
                                     }
                                 });
                                 if (!modalData) return;
-                                console.log(modalData);
                                 await updateProduct(item.id.toString(), modalData);
                                 await loadProductsPage(currentSearch, 1, currentLimit);
                                 showToast(`Producto "${modalData.name}" actualizado correctamente`, "success");
@@ -264,7 +360,7 @@ class ProductsPage {
                                 cancelText: "Cancelar",    // Texto del botón negativo
                                 size: "sm"               // Tamaño compacto para diálogos
                             }
-                            if (await modalHandler.callModalConfirm('Eliminar producto', '¿Desea eliminar el producto del sistema?', options)) {
+                            if (await modalHandler.callModalConfirm('Eliminar producto', '¿Desea eliminar el producto del sistema?. Esta acción no se puede deshacer.', options)) {
                                 try {
                                     const res = await deleteProduct(item.id.toString());
                                     showToast(res || `Producto '${item.name}' eliminado correctamente`, "success")
@@ -284,6 +380,10 @@ class ProductsPage {
         let currentPage = 1;
         let currentLimit = 10;
         let currentSearch = '';
+
+        if (params.search) {
+            currentSearch = params.search;
+        }
 
         //cargar los datos de productos
         async function loadProductsPage(searchData = '', page = 1, limit = currentLimit) {
