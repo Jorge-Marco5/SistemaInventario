@@ -169,21 +169,23 @@ class LotsPage {
         const elInput = document.getElementById('fecha-input');
         const elLabel = document.querySelector('label[for="fecha-input"]');
 
-        elLabel.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            if (typeof elInput.showPicker === 'function') {
-                elInput.showPicker();
-            } else {
-                elInput.focus();
+        const fp = flatpickr(elInput, {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            disableMobile: true,
+            positionElement: elLabel,
+            clickOpens: false,
+            onChange: async (selectedDates, dateStr) => {
+                if (dateStr) {
+                    currentSearch = dateStr;
+                    await loadLotsPage(currentSearch, 1, currentLimit);
+                }
             }
         });
 
-        elInput.addEventListener('change', async (e) => {
-            if (e.target.value) {
-                currentSearch = e.target.value;
-                await loadLotsPage(currentSearch, 1, currentLimit);
-            }
+        elLabel.addEventListener('click', (e) => {
+            e.preventDefault();
+            fp.toggle();
         });
 
         //Cargar los datos de la tabla al iniciar la pagina
@@ -350,5 +352,11 @@ class LotsPage {
             }
         }
 
+        return () => {
+            fp?.destroy?.();
+            searchHandler?.destroy?.();
+            tableHandler?.destroy?.();
+            paginationHandler?.destroy?.();
+        };
     }
 }

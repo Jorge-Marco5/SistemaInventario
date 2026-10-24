@@ -7,6 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sistema de Inventario</title>
 
+  <!-- Libreria de calendario flatpickr -->
+  <link rel="stylesheet" type="text/css" href="./hooks/lib/flatpickr/flatpickr.min.css">
+  <link rel="stylesheet" type="text/css" href="./hooks/lib/flatpickr/flatpickr.dark.min.css">
+  <script src="./hooks/lib/flatpickr/flatpickr.js"></script>
+  <script src="./hooks/lib/flatpickr/es.js"></script>
   <script type="module" src="./main.js" defer></script>
   <script src="./hooks/lib/dayjs.min.js"></script>
   <script src="./hooks/lib/utc.js"></script>
@@ -64,7 +69,7 @@
             </svg>
           </span>
         </label>
-        &nbsp;
+        <!-- &nbsp;
         <div id="dropdown-usuarios" class="dropdown-container">
           <span class="alert-dropdown"></span>
           <button class="primary square" data-toggle="dropdown"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -75,7 +80,7 @@
               <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
             </svg></button>
           <div class="dropdown-content" data-menu="dropdown"></div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -108,7 +113,7 @@
                 <path d="M20.2 20.2l1.8 1.8" />
               </svg></span>
           </label>
-          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+          <input type="text" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
         </div>
         <div class="section-2">
           <button class="primary default" id="add-product-modal">
@@ -148,7 +153,7 @@
                 <path d="M20.2 20.2l1.8 1.8" />
               </svg></span>
           </label>
-          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+          <input type="text" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
         </div>
         <div class="section-2">
         </div>
@@ -178,7 +183,7 @@
                 <path d="M20.2 20.2l1.8 1.8" />
               </svg></span>
           </label>
-          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+          <input type="text" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
         </div>
         <div class="section-2">
           <button class="success default" id="add-lot-modal">
@@ -230,7 +235,7 @@
                 <path d="M20.2 20.2l1.8 1.8" />
               </svg></span>
           </label>
-          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+          <input type="text" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
         </div>
         <div class="section-2">
           <button class="primary default" id="add-provider-modal">
@@ -270,7 +275,7 @@
                 <path d="M20.2 20.2l1.8 1.8" />
               </svg></span>
           </label>
-          <input type="date" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
+          <input type="text" id="fecha-input" style="opacity: 0; position: absolute; z-index: -1;">
         </div>
         <div class="section-2">
           <button class="primary default" id="add-category-modal">

@@ -120,21 +120,23 @@ class CategoriesPage {
         const elInput = document.getElementById('fecha-input');
         const elLabel = document.querySelector('label[for="fecha-input"]');
 
-        elLabel.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            if (typeof elInput.showPicker === 'function') {
-                elInput.showPicker();
-            } else {
-                elInput.focus();
+        const fp = flatpickr(elInput, {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            disableMobile: true,
+            positionElement: elLabel,
+            clickOpens: false,
+            onChange: async (selectedDates, dateStr) => {
+                if (dateStr) {
+                    currentSearch = dateStr;
+                    await loadCategoriesPage(currentSearch);
+                }
             }
         });
 
-        elInput.addEventListener('change', async (e) => {
-            if (e.target.value) {
-                currentSearch = e.target.value;
-                await loadCategoriesPage(currentSearch);
-            }
+        elLabel.addEventListener('click', (e) => {
+            e.preventDefault();
+            fp.toggle();
         });
 
         /**
@@ -194,6 +196,7 @@ class CategoriesPage {
 
         // Función de limpieza al desmontar este template
         return () => {
+            fp?.destroy?.();
             searchHandler?.destroy?.();
             tableHandler?.destroy?.();
         };
