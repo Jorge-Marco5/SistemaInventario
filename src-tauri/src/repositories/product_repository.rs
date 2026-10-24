@@ -8,6 +8,7 @@ use crate::utils::{escape_like, normalize_date_query};
 pub struct ProductRepository;
 
 impl ProductRepository {
+    /// Obtiene una lista paginada de productos activos con su categoría y suma de stock total.
     pub async fn find_all(
         pool: &SqlitePool,
         q: &str,
@@ -47,6 +48,7 @@ impl ProductRepository {
         .fetch_one(pool)
         .await?;
 
+        // Se utiliza COALESCE para garantizar que stock_total sea 0 cuando no existen lotes
         let products_full = sqlx::query_as::<_, ProductFull>(
             r#"
                 SELECT 
@@ -56,7 +58,7 @@ impl ProductRepository {
                 p.name,
                 p.description,
                 p.stock_min,
-                SUM(l.stock) as stock_total,
+                COALESCE(SUM(l.stock), 0) as stock_total,
                 p.price_in,
                 p.price_shop,
                 p.unit,
@@ -110,29 +112,35 @@ impl ProductRepository {
         })
     }
 
+    /// Obtiene un producto por ID junto con su stock total agrupado por producto.
     pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<ProductFull, sqlx::Error> {
         let product = sqlx::query_as::<_, ProductFull>(
             r#"
             SELECT
-            p.id,
-            p.image,
-            p.barcode,
-            p.name,
-            p.description,
-            p.stock_min,
-            st.stock_total,
-            p.price_in,
-            p.price_shop,
-            p.unit,
-            p.presentation,
-            p.provider_id,
-            p.category_id,
-            p.is_active,
-            p.is_deleted,
-            p.created_at 
+                p.id,
+                p.image,
+                p.barcode,
+                p.name,
+                p.description,
+                p.stock_min,
+                COALESCE(st.stock_total, 0) as stock_total,
+                p.price_in,
+                p.price_shop,
+                p.unit,
+                p.presentation,
+                p.provider_id,
+                p.category_id,
+                p.is_active,
+                p.is_deleted,
+                p.created_at
             FROM product p
-            LEFT JOIN (SELECT COALESCE(SUM(stock), 0)as stock_total, product_id FROM lot where stock > 0) as st ON p.id = st.product_id
-            WHERE p.id = ?
+            LEFT JOIN (
+                SELECT COALESCE(SUM(stock), 0) as stock_total, product_id
+                FROM lot
+                WHERE stock > 0
+                GROUP BY product_id
+            ) as st ON p.id = st.product_id
+            WHERE p.id = ? AND p.is_deleted = 0
             "#,
         )
         .bind(id)
@@ -142,6 +150,7 @@ impl ProductRepository {
         Ok(product)
     }
 
+    /// Busca un producto no eliminado por su código de barras.
     pub async fn find_by_barcode(
         pool: &SqlitePool,
         barcode: String,
@@ -149,7 +158,7 @@ impl ProductRepository {
         let product = sqlx::query_as::<_, Product>(
             r#"
             SELECT * FROM product
-            WHERE barcode = ?
+            WHERE barcode = ? AND is_deleted = 0
             "#,
         )
         .bind(barcode)

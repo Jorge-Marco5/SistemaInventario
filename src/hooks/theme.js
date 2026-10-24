@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const themePreference = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-        const storedTheme = localStorage.getItem("theme");
+        const storedTheme = 'light';//localStorage.getItem("theme");
         const isDark = storedTheme
             ? storedTheme === "dark"
             : themePreference.matches;

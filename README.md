@@ -4,6 +4,18 @@ Sistema para la gestión y control de inventario, productos, lotes y operaciones
 
 ---
 
+## 📚 Documentación Técnica del Proyecto
+
+La documentación completa de arquitectura, base de datos, flujos de funcionamiento y referencia de comandos se encuentra en la carpeta [`docs/`](./docs/):
+
+1. [**Visión General y Arquitectura (`docs/ANALISIS_PROYECTO.md`)**](./docs/ANALISIS_PROYECTO.md): Stack tecnológico, diagrama general del sistema, módulos y estructura del repositorio.
+2. [**Esquema de Base de Datos (`docs/ESQUEMA_BASE_DATOS.md`)**](./docs/ESQUEMA_BASE_DATOS.md): Configuración de SQLite (modo WAL), diagrama Entidad-Relación, diccionario de tablas, manejo de centavos y migraciones.
+3. [**Flujo Backend y Base de Datos (`docs/FLUJO_BACKEND_SISTEMA.md`)**](./docs/FLUJO_BACKEND_SISTEMA.md): Comunicación Cliente ↔ Backend ↔ SQLite, arranque de la app, búsquedas paginadas, entradas/ajustes de lotes y salidas FEFO.
+4. [**Funcionamiento del Frontend (`docs/FLUJO_FRONTEND_SISTEMA.md`)**](./docs/FLUJO_FRONTEND_SISTEMA.md): Enrutador SPA por `<template>`, ciclo de vida de pestañas (`mount`/`unmount`) y catálogo de componentes UI reutilizables.
+5. [**Referencia de Comandos IPC (`docs/REFERENCIA_COMANDOS_IPC.md`)**](./docs/REFERENCIA_COMANDOS_IPC.md): Catálogo completo de comandos Tauri (`invoke`), estructuras de entrada/salida y utilidades del backend.
+
+---
+
 ## 🚀 Requisitos Previos
 
 ### En Linux (Debian, Ubuntu, Arch, CachyOS, etc.)

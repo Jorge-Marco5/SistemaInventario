@@ -1,4 +1,4 @@
-use sqlx::SqlitePool;
+use sqlx::{Executor, Sqlite, SqlitePool};
 
 use crate::models::lot::{CreateLot, Lot, PaginatedLots, UpdateLot};
 use crate::utils::{escape_like, normalize_date_query};
@@ -20,9 +20,23 @@ macro_rules! lot_search_filter {
     };
 }
 
+/// Cláusula WHERE general para búsqueda global de lotes sin filtro obligatorio de producto.
+/// Parámetros: ?1 = q crudo, ?2 = patrón texto, ?3 = patrón fecha
+macro_rules! lot_global_search_filter {
+    () => {
+        r#"WHERE
+            ?1 = ''
+            OR lot_num LIKE ?2 ESCAPE '\'
+            OR expiration_date LIKE ?3 ESCAPE '\'
+            OR date_entry LIKE ?3 ESCAPE '\'
+            OR CAST(stock AS TEXT) = ?1"#
+    };
+}
+
 pub struct LotRepository;
 
 impl LotRepository {
+    /// Lista paginada de todos los lotes con búsqueda por número de lote, fechas o stock.
     pub async fn find_all(
         pool: &SqlitePool,
         q: &str,
@@ -31,31 +45,29 @@ impl LotRepository {
     ) -> Result<PaginatedLots, sqlx::Error> {
         let offset = (current_page - 1) * limit;
 
-        let search = format!("%{}%", q);
+        let q = q.trim();
+        let text_pattern = format!("%{}%", escape_like(q));
+        let date_pattern = match normalize_date_query(q) {
+            Some(iso) => format!("{}%", iso),
+            None => text_pattern.clone(),
+        };
 
-        let total: i64 = sqlx::query_scalar(
-            r#"
-                SELECT COUNT(*)
-                FROM lot
-                WHERE
-                    product_id = ?
-                "#,
-        )
-        .bind(&search)
-        .fetch_one(pool)
-        .await?;
+        let total: i64 =
+            sqlx::query_scalar(concat!("SELECT COUNT(*) FROM lot ", lot_global_search_filter!()))
+                .bind(q)
+                .bind(&text_pattern)
+                .bind(&date_pattern)
+                .fetch_one(pool)
+                .await?;
 
-        let lots = sqlx::query_as::<_, Lot>(
-            r#"
-                SELECT * FROM lot
-                WHERE
-                    product_id = ?
-                ORDER BY expiration_date DESC
-                LIMIT ?
-                OFFSET ?
-                "#,
-        )
-        .bind(&search)
+        let lots = sqlx::query_as::<_, Lot>(concat!(
+            "SELECT * FROM lot ",
+            lot_global_search_filter!(),
+            " ORDER BY expiration_date DESC, id DESC LIMIT ?4 OFFSET ?5"
+        ))
+        .bind(q)
+        .bind(&text_pattern)
+        .bind(&date_pattern)
         .bind(limit)
         .bind(offset)
         .fetch_all(pool)
@@ -89,6 +101,7 @@ impl LotRepository {
         Ok(lot)
     }
 
+    /// Obtiene los lotes con stock disponible de un producto ordenados bajo criterio FEFO.
     pub async fn find_lots_by_product(
         pool: &SqlitePool,
         product_id: i64,
@@ -180,7 +193,11 @@ impl LotRepository {
         Ok(stock)
     }
 
-    pub async fn create(pool: &SqlitePool, data: CreateLot) -> Result<Lot, sqlx::Error> {
+    /// Crea un nuevo lote aceptando tanto el pool como una transacción activa.
+    pub async fn create<'e, E>(executor: E, data: CreateLot) -> Result<Lot, sqlx::Error>
+    where
+        E: Executor<'e, Database = Sqlite>,
+    {
         sqlx::query_as::<_, Lot>(
             r#"
             INSERT INTO lot (
@@ -207,11 +224,15 @@ impl LotRepository {
         .bind(data.stock)
         .bind(data.expiration_date)
         .bind(data.date_entry)
-        .fetch_one(pool)
+        .fetch_one(executor)
         .await
     }
 
-    pub async fn update(pool: &SqlitePool, id: i64, data: UpdateLot) -> Result<Lot, sqlx::Error> {
+    /// Actualiza los datos de un lote aceptando tanto el pool como una transacción activa.
+    pub async fn update<'e, E>(executor: E, id: i64, data: UpdateLot) -> Result<Lot, sqlx::Error>
+    where
+        E: Executor<'e, Database = Sqlite>,
+    {
         sqlx::query_as::<_, Lot>(
             r#"
             UPDATE lot SET lot_num = ?, stock = ?, expiration_date = ?, date_entry = ? WHERE id = ?
@@ -231,11 +252,19 @@ impl LotRepository {
         .bind(data.expiration_date)
         .bind(data.date_entry)
         .bind(id)
-        .fetch_one(pool)
+        .fetch_one(executor)
         .await
     }
 
-    pub async fn update_lot_stock(pool: &SqlitePool, id: i64, stock: i64) -> Result<bool, String> {
+    /// Actualiza únicamente el stock de un lote (compatible con pool o transacción).
+    pub async fn update_lot_stock<'e, E>(
+        executor: E,
+        id: i64,
+        stock: i64,
+    ) -> Result<bool, String>
+    where
+        E: Executor<'e, Database = Sqlite>,
+    {
         let result = sqlx::query(
             r#"
             UPDATE lot SET stock = ? WHERE id = ?
@@ -243,7 +272,7 @@ impl LotRepository {
         )
         .bind(stock)
         .bind(id)
-        .execute(pool)
+        .execute(executor)
         .await
         .map_err(|error| error.to_string())?;
 

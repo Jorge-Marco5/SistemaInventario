@@ -1,4 +1,4 @@
-use sqlx::SqlitePool;
+use sqlx::{Executor, Sqlite, SqlitePool};
 
 use crate::models::operation::{CreateOperation, Operation, OperationData, PaginatedOperations};
 use crate::utils::{escape_like, normalize_date_query};
@@ -87,23 +87,14 @@ impl OperationRepository {
         })
     }
 
-    // pub async fn find_one(pool: &SqlitePool, id: i64) -> Result<Operation, sqlx::Error> {
-    //     let operation = sqlx::query_as::<_, Operation>(
-    //         r#"
-    //             SELECT * FROM operation WHERE id = ?
-    //             "#,
-    //     )
-    //     .bind(id)
-    //     .fetch_one(pool)
-    //     .await?;
-
-    //     Ok(operation)
-    // }
-
-    pub async fn create(
-        pool: &SqlitePool,
+    /// Registra una nueva operación en inventario aceptando tanto el pool como una transacción activa.
+    pub async fn create<'e, E>(
+        executor: E,
         data: CreateOperation,
-    ) -> Result<Operation, sqlx::Error> {
+    ) -> Result<Operation, sqlx::Error>
+    where
+        E: Executor<'e, Database = Sqlite>,
+    {
         sqlx::query_as::<_, Operation>(
             r#"
             INSERT INTO operation (
@@ -133,7 +124,7 @@ impl OperationRepository {
         .bind(data.operation_type_id)
         .bind(data.sell_id)
         .bind(data.description)
-        .fetch_one(pool)
+        .fetch_one(executor)
         .await
     }
 }

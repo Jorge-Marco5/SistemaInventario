@@ -13,7 +13,10 @@
 
 @font-face {
   font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Italic-VariableFont_opsz\,wght.ttf') format('ttf');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/Inter.woff2") format("woff2");
 }
 
 :root {
@@ -42,11 +45,6 @@
   --toast-shadow-warning: radial-gradient(circle at left, #f8f3d3, var(--background-color-secondary), var(--background-color-secondary));
   --toast-shadow-danger: radial-gradient(circle at left, #f8d3d5, var(--background-color-secondary), var(--background-color-secondary));
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
 }
 
 
@@ -73,22 +71,13 @@ body.dark-mode {
   --toast-shadow-warning: radial-gradient(circle at left, #292719, var(--background-color-secondary), var(--background-color-secondary));
   --toast-shadow-danger: radial-gradient(circle at left, #422023, var(--background-color-secondary), var(--background-color-secondary));
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
   font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 450;
-  font-style: normal;
 
   scrollbar-color: var(--bg) transparent;
   scrollbar-width: thin;

@@ -69,7 +69,6 @@ textarea {
     border: 1px solid var(--border);
     padding: 0.65em 1em;
     font-size: 0.95rem;
-    font-family: inherit;
     font-weight: 400;
     color: var(--text);
     background-color: var(--background-color-secondary);

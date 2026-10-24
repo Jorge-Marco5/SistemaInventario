@@ -23,9 +23,7 @@ impl ProductService {
         params: ProductQueryParams,
     ) -> Result<PaginatedProductsFull, String> {
         let limit = params.limit.unwrap_or(10).clamp(1, 100);
-
         let current_page = params.current_page.unwrap_or(1).max(1);
-
         let q = params.q.unwrap_or_default().trim().to_string();
 
         ProductRepository::find_all(pool, &q, limit, current_page)
@@ -43,9 +41,7 @@ impl ProductService {
         params: ProductQueryParams,
     ) -> Result<PaginatedProducts, String> {
         let limit = params.limit.unwrap_or(10).clamp(1, 100);
-
         let current_page = params.current_page.unwrap_or(1).max(1);
-
         let q = params.q.unwrap_or_default().trim().to_string();
 
         // 1. Validar que la categoría exista
@@ -69,19 +65,17 @@ impl ProductService {
         params: ProductQueryParams,
     ) -> Result<PaginatedProducts, String> {
         let limit = params.limit.unwrap_or(10).clamp(1, 100);
-
         let current_page = params.current_page.unwrap_or(1).max(1);
-
         let q = params.q.unwrap_or_default().trim().to_string();
 
-        // 1. Validar que la categoría exista
+        // 1. Validar que el proveedor exista
         ProviderRepository::find_one(pool, provider_id)
             .await
             .map_err(|error| match error {
                 sqlx::Error::RowNotFound => {
-                    format!("La el proveedor con ID {} no existe", provider_id)
+                    format!("El proveedor con ID {} no existe", provider_id)
                 }
-                _ => format!("Error al verificar la categoría: {}", error),
+                _ => format!("Error al verificar el proveedor: {}", error),
             })?;
 
         ProductRepository::find_by_provider(pool, provider_id, &q, limit, current_page)
@@ -110,11 +104,12 @@ impl ProductService {
                 _ => format!("Error al verificar el proveedor: {}", error),
             })?;
 
+        // 3. Verificar que no exista otro producto activo con el mismo código de barras
         match ProductRepository::find_by_barcode(pool, data.barcode.clone()).await {
             Ok(_) => {
-                return Err(format!(
-                    "Ya existe un producto con el mismo codigo de barras"
-                ));
+                return Err(
+                    "Ya existe un producto con el mismo codigo de barras".to_string(),
+                );
             }
             Err(sqlx::Error::RowNotFound) => {}
             Err(error) => {
@@ -122,7 +117,7 @@ impl ProductService {
             }
         }
 
-        // 3. Crear el producto
+        // 4. Crear el producto
         ProductRepository::create(pool, data)
             .await
             .map_err(|error| error.to_string())
@@ -133,7 +128,7 @@ impl ProductService {
         id: i64,
         data: UpdateProduct,
     ) -> Result<Product, String> {
-        // Validar que la categoría exista
+        // 1. Validar que la categoría exista
         CategoryRepository::find_one(pool, data.category_id)
             .await
             .map_err(|error| match error {
@@ -143,7 +138,7 @@ impl ProductService {
                 _ => format!("Error al verificar la categoría: {}", error),
             })?;
 
-        // Validar que el proveedor exista
+        // 2. Validar que el proveedor exista
         ProviderRepository::find_one(pool, data.provider_id)
             .await
             .map_err(|error| match error {
@@ -152,6 +147,19 @@ impl ProductService {
                 }
                 _ => format!("Error al verificar el proveedor: {}", error),
             })?;
+
+        // 3. Validar que el código de barras no pertenezca a otro producto distinto
+        match ProductRepository::find_by_barcode(pool, data.barcode.clone()).await {
+            Ok(existing) if existing.id != id => {
+                return Err(
+                    "Ya existe otro producto con el mismo codigo de barras".to_string(),
+                );
+            }
+            Ok(_) | Err(sqlx::Error::RowNotFound) => {}
+            Err(error) => {
+                return Err(format!("Error al verificar código de barras: {}", error));
+            }
+        }
 
         ProductRepository::update(pool, id, data)
             .await
@@ -174,6 +182,7 @@ impl ProductService {
         Ok(())
     }
 
+    /// Realiza una salida de stock aplicando criterio FEFO dentro de una transacción atómica.
     pub async fn out_stock_by_product(
         pool: &SqlitePool,
         product_id: i64,
@@ -234,6 +243,12 @@ impl ProductService {
             .await
             .map_err(|error| format!("Error al obtener los lotes del producto: {}", error))?;
 
+        // Iniciar transacción para garantizar atomicidad entre descuento de lotes y registro de operación
+        let mut tx = pool
+            .begin()
+            .await
+            .map_err(|error| format!("Error al iniciar transacción: {}", error))?;
+
         let mut remaining = quantity;
         let mut lots_details = Vec::new();
 
@@ -250,7 +265,7 @@ impl ProductService {
                     lot.lot_num, lot.id, deducted
                 ));
                 remaining -= lot.stock;
-                LotRepository::update_lot_stock(pool, lot.id, 0).await?;
+                LotRepository::update_lot_stock(&mut *tx, lot.id, 0).await?;
             } else {
                 // Este lote cubre el resto de la cantidad solicitada
                 let deducted = remaining;
@@ -260,7 +275,7 @@ impl ProductService {
                     lot.lot_num, lot.id, deducted
                 ));
                 remaining = 0;
-                LotRepository::update_lot_stock(pool, lot.id, new_stock).await?;
+                LotRepository::update_lot_stock(&mut *tx, lot.id, new_stock).await?;
             }
         }
 
@@ -280,9 +295,13 @@ impl ProductService {
             description: Some(description),
         };
 
-        OperationRepository::create(pool, operation_data)
+        OperationRepository::create(&mut *tx, operation_data)
             .await
             .map_err(|error| format!("Error al registrar la operación de salida: {}", error))?;
+
+        tx.commit()
+            .await
+            .map_err(|error| format!("Error al confirmar la transacción de salida: {}", error))?;
 
         let final_stock = total_stock - quantity;
 

@@ -6,22 +6,24 @@ import { navigateTo, registerTab, getParam, getParams, setParams } from "./hooks
 
 window.addEventListener("DOMContentLoaded", () => {
 
+  // Botón de navegación hacia atrás en el historial
   const backPage = document.querySelector('#back-page');
-  backPage.addEventListener('click', (e) => {
+  backPage.addEventListener('click', () => {
     window.history.back();
-  })
+  });
 
+  // Botón de navegación hacia adelante en el historial
   const forwardPage = document.querySelector('#forward-page');
-  forwardPage.addEventListener('click', (e) => {
-    window.history.go();
-  })
+  forwardPage.addEventListener('click', () => {
+    window.history.forward();
+  });
 
-  // Controlador para el template 'home'
+  // Controlador para el template 'products'
   registerTab("products", {
     async mount(container, params) {
-      //Cargar la logica del controlador para la pagina de productos
+      // Cargar la lógica del controlador para la página de productos
       const productsPage = new ProductsPage();
-      await productsPage.logicProductsPage(container, params);
+      return await productsPage.logicProductsPage(container, params);
     },
     unmount(container) {
       // Template desmontado
@@ -31,9 +33,9 @@ window.addEventListener("DOMContentLoaded", () => {
   // Controlador para el template 'lots'
   registerTab("lots", {
     async mount(container, params = {}) {
-      //Cargar la logica del controlador para la pagina de lotes
+      // Cargar la lógica del controlador para la página de lotes
       const lotsPage = new LotsPage();
-      await lotsPage.logicLotsPage(container, params);
+      return await lotsPage.logicLotsPage(container, params);
     },
     unmount(container) {
       // Cleanup de la pestaña lots
@@ -44,34 +46,33 @@ window.addEventListener("DOMContentLoaded", () => {
   registerTab("operations", {
     async mount(container, params = {}) {
       const operationsPage = new OperationsPage();
-      await operationsPage.logicOperationsPage(container, params);
+      return await operationsPage.logicOperationsPage(container, params);
     },
     unmount(container) {
-      //console.log("[Profile] Template desmontado");
+      // Cleanup de la pestaña operations
     }
   });
 
-  // Controlador para el template 'operations'
+  // Controlador para el template 'categories'
   registerTab("categories", {
     async mount(container, params = {}) {
       const categoriesPage = new CategoriesPage();
-      await categoriesPage.logicCategoriesPage(container, params);
+      return await categoriesPage.logicCategoriesPage(container, params);
     },
     unmount(container) {
-      //console.log("[Profile] Template desmontado");
+      // Cleanup de la pestaña categories
     }
   });
 
-  // Controlador para el template 'operations'
+  // Controlador para el template 'providers'
   registerTab("providers", {
     async mount(container, params = {}) {
       const providersPage = new ProvidersPage();
-      await providersPage.logicProvidersPage(container, params);
+      return await providersPage.logicProvidersPage(container, params);
     },
     unmount(container) {
-      //console.log("[Profile] Template desmontado");
+      // Cleanup de la pestaña providers
     }
   });
-
 
 });
