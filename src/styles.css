@@ -19,6 +19,14 @@
   src: url("./assets/fonts/Inter.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: 'Patria';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/Patria_Regular.otf") format("opentype");
+}
+
 :root {
   --background-color: radial-gradient(circle at center, #ededed 0%, #ececed 100%);
   --background-color-secondary: #FFFFFF;
@@ -89,6 +97,15 @@ body {
   max-height: 100dvh;
   background: var(--background-color);
   color: var(--text);
+}
+
+.title {
+  font-family: "Patria", sans-serif;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary);
+  cursor: pointer;
+  user-select: none;
 }
 
 a {

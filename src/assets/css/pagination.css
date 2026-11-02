@@ -51,6 +51,7 @@
 
 .pagination-container div span.current {
     background-color: var(--primary);
+    color: #fff;
     font-weight: bold;
 }
 

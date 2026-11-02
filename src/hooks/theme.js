@@ -1,7 +1,7 @@
 let storedColor = localStorage.getItem("theme_color");
 function initThemeColor() {
-    if (!storedColor || storedColor === "") {
-        const defaultColor = "#3b82f6";
+    if (storedColor || storedColor === "") {
+        const defaultColor = " #611232";
         localStorage.setItem("theme_color", defaultColor);
         storedColor = defaultColor;
     }

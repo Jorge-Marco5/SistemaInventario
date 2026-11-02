@@ -47,6 +47,7 @@
 
 .tab-btn.active {
     background-color: var(--primary);
+    color: white;
     font-weight: 600;
 }
 
