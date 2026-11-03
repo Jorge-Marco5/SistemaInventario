@@ -99,13 +99,16 @@ body {
   color: var(--text);
 }
 
-.title {
-  font-family: "Patria", sans-serif;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--primary);
-  cursor: pointer;
+.logo {
+  width: 200px;
+  height: 80px;
   user-select: none;
+}
+
+.logo img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 a {
